@@ -19,7 +19,6 @@ def generate_password():
     nr_symbols = random.randint(2, 4)
     nr_numbers = random.randint(2, 4)
 
-    password_list = []
     letters_list = [random.choice(letters) for n in range(nr_letters)]
     symbols_list = [random.choice(symbols) for n in range(nr_symbols)]
     numbers_list = [random.choice(numbers) for n in range(nr_numbers)]
@@ -27,9 +26,7 @@ def generate_password():
 
     random.shuffle(password_list)
 
-    password = ""
-    for char in password_list:
-        password += char
+    password = "".join(password_list)
 
     password_text.insert(0, password)
     print(f"Your password is: {password}")
