@@ -1,7 +1,32 @@
 from tkinter import *
+from tkinter import messagebox
+
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
+def store_account():
+    pw_content = password_text.get()
+    email_content = email_text.get()
+    website_content = website_text.get()
+    full_account = f"{website_content} | {email_content} | {pw_content}\n"
+
+    if len(pw_content) == 0 or len(website_content) == 0:
+        messagebox.showerror(title="Invalid Input", message="Must enter valid values")
+        return None
+
+    is_ok = messagebox.askokcancel(title=website_content, message=f"New Account: {website_content},"
+                                                          f" \nUsername: {email_content},"
+                                                          f" \n Password: {pw_content}")
+    if is_ok:
+        with open("data.txt", 'a') as file:
+            file.write(full_account + '\n')
+            password_text.delete(0, END)
+            website_text.delete(0, END)
+
+
+
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 # Window setup
@@ -30,7 +55,7 @@ password_text.grid(column=1, row=3)
 # Buttons
 generate_pass_button = Button(text="Generate Password")
 generate_pass_button.grid(column=2, row=3)
-add_button = Button(text="Add", width=36, highlightthickness=0, bg='white')
+add_button = Button(text="Add", width=36, highlightthickness=0, bg='white', command=store_account)
 add_button.grid(column=1, row=4, columnspan=2)
 
 # Image
