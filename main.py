@@ -1,8 +1,39 @@
 from tkinter import *
 from tkinter import messagebox
+import random
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+
+def generate_password():
+    password_text.delete(0, END)
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+               'v',
+               'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+               'R',
+               'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+
+    nr_letters = random.randint(8, 10)
+    nr_symbols = random.randint(2, 4)
+    nr_numbers = random.randint(2, 4)
+
+    password_list = []
+    letters_list = [random.choice(letters) for n in range(nr_letters)]
+    symbols_list = [random.choice(symbols) for n in range(nr_symbols)]
+    numbers_list = [random.choice(numbers) for n in range(nr_numbers)]
+    password_list = letters_list + symbols_list + numbers_list
+
+    random.shuffle(password_list)
+
+    password = ""
+    for char in password_list:
+        password += char
+
+    password_text.insert(0, password)
+    print(f"Your password is: {password}")
+
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def store_account():
@@ -16,16 +47,13 @@ def store_account():
         return None
 
     is_ok = messagebox.askokcancel(title=website_content, message=f"New Account: {website_content},"
-                                                          f" \nUsername: {email_content},"
-                                                          f" \n Password: {pw_content}")
+                                                                  f" \nUsername: {email_content},"
+                                                                  f" \n Password: {pw_content}")
     if is_ok:
         with open("data.txt", 'a') as file:
             file.write(full_account + '\n')
             password_text.delete(0, END)
             website_text.delete(0, END)
-
-
-
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -53,7 +81,7 @@ password_text = Entry(bg='white', width=21, fg='black')
 password_text.grid(column=1, row=3)
 
 # Buttons
-generate_pass_button = Button(text="Generate Password")
+generate_pass_button = Button(text="Generate Password", command=generate_password)
 generate_pass_button.grid(column=2, row=3)
 add_button = Button(text="Add", width=36, highlightthickness=0, bg='white', command=store_account)
 add_button.grid(column=1, row=4, columnspan=2)
