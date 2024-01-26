@@ -29,7 +29,6 @@ def generate_password():
     password = "".join(password_list)
 
     password_text.insert(0, password)
-    print(f"Your password is: {password}")
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
