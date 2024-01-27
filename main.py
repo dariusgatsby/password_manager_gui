@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
+
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
@@ -34,23 +36,23 @@ def generate_password():
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def store_account():
-    pw_content = password_text.get()
-    email_content = email_text.get()
-    website_content = website_text.get()
-    full_account = f"{website_content} | {email_content} | {pw_content}\n"
+    pw = password_text.get()
+    email = email_text.get()
+    website = website_text.get()
+    new_data = {website: {
+        'email': email,
+        'password': pw
+    }}
+    full_account = f"{website} | {email} | {pw}\n"
 
-    if len(pw_content) == 0 or len(website_content) == 0:
+    if len(pw) == 0 or len(website) == 0:
         messagebox.showerror(title="Invalid Input", message="Must enter valid values")
         return None
 
-    is_ok = messagebox.askokcancel(title=website_content, message=f"New Account: {website_content},"
-                                                                  f" \nUsername: {email_content},"
-                                                                  f" \n Password: {pw_content}")
-    if is_ok:
-        with open("data.txt", 'a') as file:
-            file.write(full_account + '\n')
-            password_text.delete(0, END)
-            website_text.delete(0, END)
+    with open("data.json", 'w') as file:
+        json.dump(new_data, file)
+        password_text.delete(0, END)
+        website_text.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
