@@ -35,24 +35,51 @@ def generate_password():
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
+def write_to_json(data):
+    with open("data.json", 'w') as file:
+        json.dump(data, file, indent=4)
+        password_text.delete(0, END)
+        website_text.delete(0, END)
+
+
 def store_account():
     pw = password_text.get()
     email = email_text.get()
     website = website_text.get()
-    new_data = {website: {
-        'email': email,
-        'password': pw
-    }}
-    full_account = f"{website} | {email} | {pw}\n"
 
     if len(pw) == 0 or len(website) == 0:
         messagebox.showerror(title="Invalid Input", message="Must enter valid values")
         return None
 
-    with open("data.json", 'w') as file:
-        json.dump(new_data, file)
-        password_text.delete(0, END)
-        website_text.delete(0, END)
+    try:
+        new_data = {website: {
+            'email': email,
+            'password': pw
+        }}
+
+        with open("data.json", 'r') as file:
+            data = json.load(file)
+            data.update(new_data)
+    except FileNotFoundError:
+        write_to_json(new_data)
+    else:
+        write_to_json(data)
+
+
+# ---------------------------- Search Credentials --------------------- #
+def search_accounts():
+    website = website_text.get()
+    try:
+        with open("data.json", 'r') as file:
+            data = json.load(file)
+            print(data[website])
+    except FileNotFoundError:
+        messagebox.showerror(title="No save file", message="No data to be searched")
+    except KeyError as error_message:
+        messagebox.showerror(title="Non-existent key", message=f"The website {error_message} does not exist here.")
+    else:
+        messagebox.showinfo(title="As per request", message=f"Username: {data[website]['email']},"
+                                                            f" Password: {data[website]['password']}")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -64,16 +91,16 @@ window.config(pady=50, padx=50, bg='white')
 # Labels
 website_label = Label(text="Website Url:", bg='white', fg='black')
 website_label.grid(column=0, row=1)
-email_label = Label(text="Email/Username:", bg='white', fg='black')
+email_label = Label(text="Username:", bg='white', fg='black')
 email_label.grid(column=0, row=2)
 password_label = Label(text="Password:", bg='white', fg='black')
 password_label.grid(column=0, row=3)
 
 # Text boxes
-website_text = Entry(bg='white', width=35, fg='black')
-website_text.grid(column=1, row=1, columnspan=2)
+website_text = Entry(bg='white', width=21, fg='black')
+website_text.grid(column=1, row=1)
 website_text.focus()
-email_text = Entry(bg='white', width=35, fg='black')
+email_text = Entry(bg='white', width=38, fg='black')
 email_text.insert(0, "dariusid08@gmail.com")
 email_text.grid(column=1, row=2, columnspan=2)
 password_text = Entry(bg='white', width=21, fg='black')
@@ -84,6 +111,8 @@ generate_pass_button = Button(text="Generate Password", command=generate_passwor
 generate_pass_button.grid(column=2, row=3)
 add_button = Button(text="Add", width=36, highlightthickness=0, bg='white', command=store_account)
 add_button.grid(column=1, row=4, columnspan=2)
+search_button = Button(text='Search', command=search_accounts, width=13)
+search_button.grid(column=2, row=1)
 
 # Image
 lock_img = PhotoImage(file='logo.png')
